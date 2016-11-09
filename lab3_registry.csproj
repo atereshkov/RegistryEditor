@@ -58,6 +58,7 @@
     </ApplicationDefinition>
     <Compile Include="Item.cs" />
     <Compile Include="TestData.cs" />
+    <Compile Include="Utils\FileUtils.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -106,6 +107,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="IO\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

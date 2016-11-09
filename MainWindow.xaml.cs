@@ -38,7 +38,18 @@ namespace lab3_registry
 
         private void treeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            
+            if (treeView.SelectedItem is Folder)
+            {
+                Folder folder = treeView.SelectedItem as Folder;
+                label.Content = folder.Name;
+            }
+            else
+            {
+                File file = treeView.SelectedItem as File;
+                label.Content = file.Name;
+            }
         }
+
+      
     }
 }

@@ -31,6 +31,7 @@ namespace lab3_registry
             folders[1].Files.Add(new File() { Key = 2, Name = "Kkeqw 2" });
             folders[1].Files.Add(new File() { Key = 3, Name = "SAxzc 23" });
 
+            folders[1].SubFolders.Add(folders[3]);
             folders[0].SubFolders.Add(folders[1]);
             //grp4.SubFolders.Add(grp1);
             //grp2.SubFolders.Add(grp4);

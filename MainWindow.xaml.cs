@@ -41,12 +41,12 @@ namespace lab3_registry
             if (treeView.SelectedItem is Folder)
             {
                 Folder folder = treeView.SelectedItem as Folder;
-                label.Content = folder.Name;
+                label.Content = "Folder: " + folder.Name;
             }
             else
             {
                 File file = treeView.SelectedItem as File;
-                label.Content = file.Name;
+                label.Content = "File: " + file.Name;
             }
         }
 

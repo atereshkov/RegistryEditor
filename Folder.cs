@@ -11,6 +11,8 @@ namespace lab3_registry
         public int Key { get; set; }
         public string Name { get; set; }
 
+        public IList<Parameter> Parameters { get; set; }
+
         public IList<Folder> SubFolders { get; set; }
         public IList<File> Files { get; set; }
 

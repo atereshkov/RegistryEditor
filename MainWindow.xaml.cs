@@ -28,10 +28,10 @@ namespace lab3_registry
             data.Load();
             treeView.ItemsSource = data.Groups;
 
-            List<Item> result = new List<Item>();
-            result.Add(new Item(1, "(По умолчанию)", "REG_SZ", "(значение не присвоено)"));
-            result.Add(new Item(2, "gta.exe", "REG_SZ", "D:/GTA San Andreas/gta_sa.exe"));
-            result.Add(new Item(3, "Player Name", "REG_SZ", "Andrew Kramer"));
+            List<Parameter> result = new List<Parameter>();
+            result.Add(new Parameter(1, "(По умолчанию)", "REG_SZ", "(значение не присвоено)"));
+            result.Add(new Parameter(2, "gta.exe", "REG_SZ", "D:/GTA San Andreas/gta_sa.exe"));
+            result.Add(new Parameter(3, "Player Name", "REG_SZ", "Andrew Kramer"));
 
             dataGrid.ItemsSource = result;
         }
@@ -48,6 +48,13 @@ namespace lab3_registry
                 File file = treeView.SelectedItem as File;
                 label.Content = "File: " + file.Name;
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            TestData data = new TestData();
+            data.Load();
+            treeView.ItemsSource = data.Groups;
         }
 
       

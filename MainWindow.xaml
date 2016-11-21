@@ -33,7 +33,7 @@
             </DataGrid.Columns>
         </DataGrid>
         <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="350,363,0,0" VerticalAlignment="Top"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="435,459,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="Load data" HorizontalAlignment="Left" Margin="435,459,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
 
     </Grid>
 </Window>

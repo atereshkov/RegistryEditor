@@ -4,23 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using lab3_registry.Utils;
+using lab3_registry.IO;
 
 namespace lab3_registry
 {
     public class TestData
     {
         public IList<Folder> Groups = new List<Folder>();
+        public IList<string> Filenames = new List<string>();
 
         public const string PATH_FOLDERS = @"E:\Универ\5SEMESTR\ОС\lab3\lab3_registry\bin\Debug\folders";
 
         public void Load()
         {
-            List<string> filenames = FileUtils.getFilenamesFromDir(PATH_FOLDERS);
+            Filenames = FileUtils.getFilenamesFromDir(PATH_FOLDERS);
             List<Folder> folders = new List<Folder>();
 
-            for (int i = 0; i < filenames.Count(); i++)
+            for (int i = 0; i < Filenames.Count(); i++)
             {
-                folders.Add(new Folder() { Key = i, Name = filenames[i], SubFolders = new List<Folder>(), Files = new List<File>() });
+                folders.Add(new Folder() { Key = i, Name = Filenames[i], SubFolders = new List<Folder>(), Files = new List<File>() });
             }
 
             folders[0].Files.Add(new File() { Key = 1, Name = "Entry number 1" });
@@ -33,6 +35,8 @@ namespace lab3_registry
 
             folders[1].SubFolders.Add(folders[3]);
             folders[0].SubFolders.Add(folders[1]);
+            folders[0].SubFolders.Add(folders[4]);
+            folders[0].SubFolders.Add(folders[2]);
             //grp4.SubFolders.Add(grp1);
             //grp2.SubFolders.Add(grp4);
 
@@ -40,6 +44,28 @@ namespace lab3_registry
             {
                 Groups.Add(folders[i]);
             }
+
+            getFolder(folders[0].Name);
+        }
+
+        public Folder getFolder(string folderName)
+        {
+            Folder folder = new Folder();
+
+            string[] lines = Reader.ReadAllLines(PATH_FOLDERS + "\\" + folderName + ".txt");
+
+            for (int i = 0; i < lines.Count(); i++)
+            {
+                if (lines[i].Contains("parameters-start"))
+                {
+                    while (!lines[i++].Contains("parameters-end"))
+                    {
+                        Console.WriteLine(lines[i]);
+                    }
+                }
+            }
+
+            return folder;
         }
     }
 }

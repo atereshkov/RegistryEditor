@@ -56,9 +56,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Item.cs" />
+    <Compile Include="IO\Reader.cs" />
+    <Compile Include="Parameter.cs" />
     <Compile Include="TestData.cs" />
     <Compile Include="Utils\FileUtils.cs" />
+    <Compile Include="Utils\Parser.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -108,9 +110,7 @@
   <ItemGroup>
     <Resource Include="images\folder.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="IO\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

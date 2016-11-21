@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace lab3_registry
 {
-    public class Item
+    public class Parameter
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
         public string Value { get; set; }
 
-        public Item(int Id, string Name, string Type, string Value)
+        public Parameter(int Id, string Name, string Type, string Value)
         {
             this.Id = Id;
             this.Name = Name;
@@ -21,6 +21,6 @@ namespace lab3_registry
             this.Value = Value;
         }
         
-        public Item() { }
+        public Parameter() { }
     }
 }

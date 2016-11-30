@@ -25,6 +25,7 @@ namespace lab3_registry
                 folders.Add(new Folder() { Key = i, Name = Filenames[i], SubFolders = new List<Folder>(), Files = new List<File>() });
             }
 
+            /*
             folders[0].Files.Add(new File() { Key = 1, Name = "Entry number 1" });
             folders[0].Files.Add(new File() { Key = 2, Name = "Entry number 2" });
             folders[0].Files.Add(new File() { Key = 3, Name = "Entry number 3" });
@@ -32,13 +33,13 @@ namespace lab3_registry
             folders[1].Files.Add(new File() { Key = 1, Name = "Subkey 1" });
             folders[1].Files.Add(new File() { Key = 2, Name = "Kkeqw 2" });
             folders[1].Files.Add(new File() { Key = 3, Name = "SAxzc 23" });
-
+           
+            
             folders[1].SubFolders.Add(folders[3]);
             folders[0].SubFolders.Add(folders[1]);
             folders[0].SubFolders.Add(folders[4]);
             folders[0].SubFolders.Add(folders[2]);
-            //grp4.SubFolders.Add(grp1);
-            //grp2.SubFolders.Add(grp4);
+            */
 
             for (int i = 0; i < folders.Count(); i++)
             {
@@ -48,6 +49,7 @@ namespace lab3_registry
             getFolder(folders[0].Name);
         }
 
+        /*
         public Folder getFolder(string folderName)
         {
             Folder folder = new Folder();
@@ -67,5 +69,52 @@ namespace lab3_registry
 
             return folder;
         }
+        */
+
+        public Folder getFolder(string folderName)
+        {
+            Folder folder = new Folder();
+
+            string[] lines = Reader.ReadAllLines(PATH_FOLDERS + "\\" + folderName + ".txt");
+
+            Char delimiter = '\\';
+            String[] subFolders = null;
+            if (lines[0].Contains("\\"))
+            {
+                subFolders = lines[0].Split(delimiter);
+            }
+
+            /*
+            for (int i = 0; i < lines.Count(); i++)
+            {
+                
+            }
+            */
+
+            for (int j = 0; j < subFolders.Count(); j++)
+            {
+                Folder subFolder = new Folder() { 
+                    Key = j, 
+                    Name = subFolders[j], 
+                    SubFolders = new List<Folder>(), 
+                    Files = new List<File>() };
+
+                Groups[0].SubFolders.Add(subFolder);
+            }
+
+            return folder;
+        }
+
+        /*
+                currentStructure.Add(xE.Value);
+                string[] splittedPath = xE.Value.Split('\\');
+                if (!tree.Nodes.ContainsKey(splittedPath[0]))
+                {
+                    tree.Nodes.Add(splittedPath[0], splittedPath[0]);
+                }
+                if (splittedPath.Length > 1)
+                    getTree(tree.Nodes[splittedPath[0]], splittedPath, 1);
+         */
+
     }
 }

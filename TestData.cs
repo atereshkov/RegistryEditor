@@ -78,11 +78,9 @@ namespace lab3_registry
             string[] lines = Reader.ReadAllLines(PATH_FOLDERS + "\\" + folderName + ".txt");
 
             Char delimiter = '\\';
-            String[] subFolders = null;
-            if (lines[0].Contains("\\"))
-            {
-                subFolders = lines[0].Split(delimiter);
-            }
+            String[] splittedFolders = null;
+            splittedFolders = lines[0].Split(delimiter);
+
 
             /*
             for (int i = 0; i < lines.Count(); i++)
@@ -91,18 +89,70 @@ namespace lab3_registry
             }
             */
 
-            for (int j = 0; j < subFolders.Count(); j++)
+            /*
+            for (int j = 0; j < splittedFolders.Count(); j++)
             {
                 Folder subFolder = new Folder() { 
                     Key = j, 
-                    Name = subFolders[j], 
+                    Name = splittedFolders[j], 
                     SubFolders = new List<Folder>(), 
                     Files = new List<File>() };
 
                 Groups[0].SubFolders.Add(subFolder);
             }
+            */
+
+            Folder  subFolder = new Folder()
+            {
+                Key = 0,
+                Name = splittedFolders[0],
+                SubFolders = new List<Folder>(),
+                Files = new List<File>()
+            };  
+
+            Groups[0].SubFolders.Add(subFolder);
+
+            if (!Groups[0].SubFolders.Contains(subFolder))
+            {
+                Groups[0].SubFolders.Add(subFolder);
+            }
+            if (splittedFolders.Length > 1)
+            {
+                getFolder(Groups[0].SubFolders[0], splittedFolders, 1);
+            }
 
             return folder;
+        }
+
+        private Folder getFolder(Folder folder, string[] splittedPath, int i)
+        {
+            Folder splittedPathI = new Folder() { Key = i, Name = splittedPath[i], SubFolders = new List<Folder>(), Files = new List<File>() };
+            if (!folder.SubFolders.Contains(splittedPathI))
+            {
+                folder.SubFolders.Add(splittedPathI);
+            }
+
+            if (i == splittedPath.Length - 1)
+            {
+                return folder;
+            }
+            else
+            {
+                i++;
+                Folder toFind = new Folder() { Key = i, Name = splittedPath[i - 1], SubFolders = new List<Folder>(), Files = new List<File>() };
+                int foundId = 0;
+
+                for (int j = 0; j < folder.SubFolders.Count(); j++)
+                {
+                    if (folder.SubFolders[j].Name == toFind.Name)
+                    {
+                        foundId = j;
+                        break;
+                    }
+                }
+
+                return getFolder(folder.SubFolders.ElementAt(foundId), splittedPath, i);
+            }
         }
 
         /*

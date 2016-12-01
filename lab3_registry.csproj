@@ -57,6 +57,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="IO\Reader.cs" />
+    <Compile Include="IO\Saver.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="TestData.cs" />
     <Compile Include="Utils\FileUtils.cs" />

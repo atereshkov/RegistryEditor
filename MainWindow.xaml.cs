@@ -20,13 +20,14 @@ namespace lab3_registry
     /// </summary>
     public partial class MainWindow : Window
     {
+        TestData data = new TestData();
+
         public MainWindow()
         {
             InitializeComponent();
 
-            TestData data = new TestData();
             data.Load();
-            treeView.ItemsSource = data.Groups;
+            treeView.ItemsSource = data.RootGroups;
 
             List<Parameter> result = new List<Parameter>();
             result.Add(new Parameter(1, "(По умолчанию)", "REG_SZ", "(значение не присвоено)"));
@@ -52,9 +53,14 @@ namespace lab3_registry
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            TestData data = new TestData();
+            data = new TestData();
             data.Load();
-            treeView.ItemsSource = data.Groups;
+            treeView.ItemsSource = data.RootGroups;
+        }
+
+        private void saveButton_Click(object sender, RoutedEventArgs e)
+        {
+            data.Save();
         }
 
       

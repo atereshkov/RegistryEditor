@@ -10,7 +10,7 @@ namespace lab3_registry
 {
     public class TestData
     {
-        public IList<Folder> Groups = new List<Folder>();
+        public IList<Folder> RootGroups = new List<Folder>();
         public IList<string> Filenames = new List<string>();
 
         public const string PATH_FOLDERS = @"E:\Универ\5SEMESTR\ОС\lab3\lab3_registry\bin\Debug\folders";
@@ -20,55 +20,17 @@ namespace lab3_registry
             Filenames = FileUtils.getFilenamesFromDir(PATH_FOLDERS);
             List<Folder> folders = new List<Folder>();
 
-            for (int i = 0; i < Filenames.Count(); i++)
+            for (int i = 0; i < Filenames.Count(); i++) // get all files from dir "folders"
             {
                 folders.Add(new Folder() { Key = i, Name = Filenames[i], SubFolders = new List<Folder>(), Files = new List<File>() });
             }
 
-            /*
-            folders[0].Files.Add(new File() { Key = 1, Name = "Entry number 1" });
-            folders[0].Files.Add(new File() { Key = 2, Name = "Entry number 2" });
-            folders[0].Files.Add(new File() { Key = 3, Name = "Entry number 3" });
-
-            folders[1].Files.Add(new File() { Key = 1, Name = "Subkey 1" });
-            folders[1].Files.Add(new File() { Key = 2, Name = "Kkeqw 2" });
-            folders[1].Files.Add(new File() { Key = 3, Name = "SAxzc 23" });
-           
-            
-            folders[1].SubFolders.Add(folders[3]);
-            folders[0].SubFolders.Add(folders[1]);
-            folders[0].SubFolders.Add(folders[4]);
-            folders[0].SubFolders.Add(folders[2]);
-            */
-
-            for (int i = 0; i < folders.Count(); i++)
+            for (int i = 0; i < folders.Count(); i++) // add all root folders
             {
-                Groups.Add(folders[i]);
-                getFolder(folders[i].Name, i);
+                RootGroups.Add(folders[i]);
+                getFolder(folders[i].Name, i); // start adding subfolders and subfolders of subfolders and so on...
             }
         }
-
-        /*
-        public Folder getFolder(string folderName)
-        {
-            Folder folder = new Folder();
-
-            string[] lines = Reader.ReadAllLines(PATH_FOLDERS + "\\" + folderName + ".txt");
-
-            for (int i = 0; i < lines.Count(); i++)
-            {
-                if (lines[i].Contains("parameters-start"))
-                {
-                    while (!lines[i++].Contains("parameters-end"))
-                    {
-                        Console.WriteLine(lines[i]);
-                    }
-                }
-            }
-
-            return folder;
-        }
-        */
 
         public Folder getFolder(string folderName, int groupId)
         {
@@ -92,15 +54,15 @@ namespace lab3_registry
                     Files = new List<File>()
                 };
 
-                Groups[groupId].SubFolders.Add(subFolder);
+                RootGroups[groupId].SubFolders.Add(subFolder);
 
-                if (!Groups[groupId].SubFolders.Contains(subFolder))
+                if (!RootGroups[groupId].SubFolders.Contains(subFolder))
                 {
-                    Groups[groupId].SubFolders.Add(subFolder);
+                    RootGroups[groupId].SubFolders.Add(subFolder);
                 }
                 if (splittedFolders.Length > 1)
                 {
-                    getFolder(Groups[groupId].SubFolders[j], splittedFolders, 1);
+                    getFolder(RootGroups[groupId].SubFolders[j], splittedFolders, 1);
                 }
                 j++;
             }
@@ -116,6 +78,11 @@ namespace lab3_registry
                 folder.SubFolders.Add(splittedPathI);
             }
 
+            if (folder.Name == splittedPathI.Name)
+            {
+                return folder;
+            }
+
             if (i == splittedPath.Length - 1)
             {
                 return folder;
@@ -123,12 +90,12 @@ namespace lab3_registry
             else
             {
                 i++;
-                Folder filderToFind = new Folder() { Key = i, Name = splittedPath[i - 1], SubFolders = new List<Folder>(), Files = new List<File>() };
+                Folder folderToFind = new Folder() { Key = i, Name = splittedPath[i - 1], SubFolders = new List<Folder>(), Files = new List<File>() };
                 int foundId = 0;
 
-                for (int j = 0; j < folder.SubFolders.Count(); j++)
+                for (int j = 0; j < folder.SubFolders.Count(); j++) // find subfolder in exists subfolders
                 {
-                    if (folder.SubFolders[j].Name == filderToFind.Name)
+                    if (folder.SubFolders[j].Name == folderToFind.Name)
                     {
                         foundId = j;
                         break;
@@ -137,6 +104,27 @@ namespace lab3_registry
 
                 return getFolder(folder.SubFolders.ElementAt(foundId), splittedPath, i);
             }
+        }
+
+        public void Save()
+        {
+            for (int i = 0; i < RootGroups.Count(); i++)
+            {
+                Console.WriteLine("RootGroup: " + RootGroups[i].Name);
+
+                SaveFolder(RootGroups[i], i);
+            }
+        }
+
+        private Folder SaveFolder(Folder rootFolder, int groupId)
+        {
+            Folder folder = new Folder();
+            Saver.SaveText(PATH_FOLDERS + "\\save\\" + rootFolder.Name + ".txt", rootFolder.Name);
+
+            for (int i = 0; i < rootFolder.SubFolders.Count(); i++)
+                Console.WriteLine(rootFolder.SubFolders[i].Name);
+
+            return folder;
         }
 
     }

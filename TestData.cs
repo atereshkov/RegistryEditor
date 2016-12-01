@@ -78,49 +78,34 @@ namespace lab3_registry
             string[] lines = Reader.ReadAllLines(PATH_FOLDERS + "\\" + folderName + ".txt");
 
             Char delimiter = '\\';
-            String[] splittedFolders = null;
-            splittedFolders = lines[0].Split(delimiter);
+            String[] splittedFolders;
 
-
-            /*
+            int j = 0;
             for (int i = 0; i < lines.Count(); i++)
             {
-                
-            }
-            */
+                splittedFolders = lines[i].Split(delimiter);
 
-            /*
-            for (int j = 0; j < splittedFolders.Count(); j++)
-            {
-                Folder subFolder = new Folder() { 
-                    Key = j, 
-                    Name = splittedFolders[j], 
-                    SubFolders = new List<Folder>(), 
-                    Files = new List<File>() };
+                Folder subFolder = new Folder()
+                {
+                    Key = 0,
+                    Name = splittedFolders[0],
+                    SubFolders = new List<Folder>(),
+                    Files = new List<File>()
+                };
 
                 Groups[0].SubFolders.Add(subFolder);
+
+                if (!Groups[0].SubFolders.Contains(subFolder))
+                {
+                    Groups[0].SubFolders.Add(subFolder);
+                }
+                if (splittedFolders.Length > 1)
+                {
+                    getFolder(Groups[0].SubFolders[j], splittedFolders, 1);
+                }
+                j++;
             }
-            */
-
-            Folder  subFolder = new Folder()
-            {
-                Key = 0,
-                Name = splittedFolders[0],
-                SubFolders = new List<Folder>(),
-                Files = new List<File>()
-            };  
-
-            Groups[0].SubFolders.Add(subFolder);
-
-            if (!Groups[0].SubFolders.Contains(subFolder))
-            {
-                Groups[0].SubFolders.Add(subFolder);
-            }
-            if (splittedFolders.Length > 1)
-            {
-                getFolder(Groups[0].SubFolders[0], splittedFolders, 1);
-            }
-
+            
             return folder;
         }
 
@@ -154,17 +139,6 @@ namespace lab3_registry
                 return getFolder(folder.SubFolders.ElementAt(foundId), splittedPath, i);
             }
         }
-
-        /*
-                currentStructure.Add(xE.Value);
-                string[] splittedPath = xE.Value.Split('\\');
-                if (!tree.Nodes.ContainsKey(splittedPath[0]))
-                {
-                    tree.Nodes.Add(splittedPath[0], splittedPath[0]);
-                }
-                if (splittedPath.Length > 1)
-                    getTree(tree.Nodes[splittedPath[0]], splittedPath, 1);
-         */
 
     }
 }

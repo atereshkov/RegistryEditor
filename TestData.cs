@@ -44,9 +44,8 @@ namespace lab3_registry
             for (int i = 0; i < folders.Count(); i++)
             {
                 Groups.Add(folders[i]);
+                getFolder(folders[i].Name, i);
             }
-
-            getFolder(folders[0].Name);
         }
 
         /*
@@ -71,7 +70,7 @@ namespace lab3_registry
         }
         */
 
-        public Folder getFolder(string folderName)
+        public Folder getFolder(string folderName, int groupId)
         {
             Folder folder = new Folder();
 
@@ -93,15 +92,15 @@ namespace lab3_registry
                     Files = new List<File>()
                 };
 
-                Groups[0].SubFolders.Add(subFolder);
+                Groups[groupId].SubFolders.Add(subFolder);
 
-                if (!Groups[0].SubFolders.Contains(subFolder))
+                if (!Groups[groupId].SubFolders.Contains(subFolder))
                 {
-                    Groups[0].SubFolders.Add(subFolder);
+                    Groups[groupId].SubFolders.Add(subFolder);
                 }
                 if (splittedFolders.Length > 1)
                 {
-                    getFolder(Groups[0].SubFolders[j], splittedFolders, 1);
+                    getFolder(Groups[groupId].SubFolders[j], splittedFolders, 1);
                 }
                 j++;
             }
@@ -124,12 +123,12 @@ namespace lab3_registry
             else
             {
                 i++;
-                Folder toFind = new Folder() { Key = i, Name = splittedPath[i - 1], SubFolders = new List<Folder>(), Files = new List<File>() };
+                Folder filderToFind = new Folder() { Key = i, Name = splittedPath[i - 1], SubFolders = new List<Folder>(), Files = new List<File>() };
                 int foundId = 0;
 
                 for (int j = 0; j < folder.SubFolders.Count(); j++)
                 {
-                    if (folder.SubFolders[j].Name == toFind.Name)
+                    if (folder.SubFolders[j].Name == filderToFind.Name)
                     {
                         foundId = j;
                         break;

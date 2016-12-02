@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using lab3_registry.Utils;
 using lab3_registry.IO;
 
@@ -119,13 +120,47 @@ namespace lab3_registry
         private Folder SaveFolder(Folder rootFolder, int groupId)
         {
             Folder folder = new Folder();
-            Saver.SaveText(PATH_FOLDERS + "\\save\\" + rootFolder.Name + ".txt", rootFolder.Name);
+            string filename = PATH_FOLDERS + "\\save\\" + rootFolder.Name + ".txt";
 
-            for (int i = 0; i < rootFolder.SubFolders.Count(); i++)
-                Console.WriteLine(rootFolder.SubFolders[i].Name);
+            using (StreamWriter streamWriter = new StreamWriter(PATH_FOLDERS + "\\save\\" + rootFolder.Name + ".txt"))
+            {
+                for (int i = 0; i < rootFolder.SubFolders.Count(); i++)
+                {
+                    Console.WriteLine(rootFolder.SubFolders[i].Name);
+                    SaveFolder(streamWriter, rootFolder.SubFolders);
+                }
+                streamWriter.Close();
+            }
+
+            FileUtils.RemoveEmptyLines(filename);
+            FileUtils.RemoveLinesFromFile(filename, rootFolder.SubFolders.Count());
+            FileUtils.RemoveLastCharacter(filename);
 
             return folder;
         }
+
+        public void SaveFolder(StreamWriter writer, IList<Folder> subFolders)
+        {
+            List<String> subs = new List<String>();
+            foreach (Folder subFolder in subFolders)
+            {
+                if (subFolders.Count() > 0)
+                {
+                    Console.WriteLine("Count > 0 " + subFolder.Name);
+                    subs.Add(subFolder.Name);
+                }
+                else
+                {
+                    Console.WriteLine("Else: " + subFolder.Name);
+                }
+                writer.Write(FileUtils.getFullPath(subs));
+                Console.WriteLine("sub = " + FileUtils.getFullPath(subs));
+                subs.Clear();
+                SaveFolder(writer, subFolder.SubFolders);
+            }
+            writer.WriteLine();
+        }
+
 
     }
 }

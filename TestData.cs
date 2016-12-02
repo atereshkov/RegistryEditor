@@ -120,7 +120,7 @@ namespace lab3_registry
         private Folder SaveFolder(Folder rootFolder, int groupId)
         {
             Folder folder = new Folder();
-            string filename = PATH_FOLDERS + rootFolder.Name + ".txt";
+            string filename = PATH_FOLDERS + "\\" + rootFolder.Name + ".txt";
 
             using (StreamWriter streamWriter = new StreamWriter(filename))
             {

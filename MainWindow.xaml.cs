@@ -43,6 +43,17 @@ namespace lab3_registry
             {
                 Folder folder = treeView.SelectedItem as Folder;
                 label.Content = "Folder: " + folder.Name;
+
+                if (folder.Parameters != null)
+                {
+                    dataGrid.ItemsSource = folder.Parameters;
+                    Console.WriteLine("Folder parameters count: " + folder.Parameters.Count());
+                }
+                else
+                {
+                    dataGrid.ItemsSource = folder.Parameters;
+                    Console.WriteLine("Folder parameters null");
+                }
             }
             else
             {

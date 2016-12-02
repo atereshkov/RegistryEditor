@@ -37,7 +37,7 @@ namespace lab3_registry
         {
             Folder folder = new Folder();
 
-            string[] lines = Reader.ReadAllLines(PATH_FOLDERS + "\\" + folderName + ".txt");
+            string[] lines = Reader.ReadAllLines(PATH_FOLDERS + "\\" + folderName + ".txt"); // get all lines from one group (HKEY_LOCAL_MACHINE, for example)
 
             Char delimiter = '\\';
             String[] splittedFolders;
@@ -45,7 +45,7 @@ namespace lab3_registry
             int j = 0;
             for (int i = 0; i < lines.Count(); i++)
             {
-                splittedFolders = lines[i].Split(delimiter);
+                splittedFolders = lines[i].Split(delimiter); // split it with delimiter "\"
 
                 Folder subFolder = new Folder()
                 {
@@ -55,7 +55,7 @@ namespace lab3_registry
                     Files = new List<File>()
                 };
 
-                RootGroups[groupId].SubFolders.Add(subFolder);
+                RootGroups[groupId].SubFolders.Add(subFolder); // add first subfolder
 
                 if (!RootGroups[groupId].SubFolders.Contains(subFolder))
                 {
@@ -63,7 +63,7 @@ namespace lab3_registry
                 }
                 if (splittedFolders.Length > 1)
                 {
-                    getFolder(RootGroups[groupId].SubFolders[j], splittedFolders, 1);
+                    getFolder(RootGroups[groupId].SubFolders[j], splittedFolders, 1); // start recursive adding
                 }
                 j++;
             }
@@ -113,16 +113,16 @@ namespace lab3_registry
             {
                 Console.WriteLine("RootGroup: " + RootGroups[i].Name);
 
-                SaveFolder(RootGroups[i], i);
+                SaveFolder(RootGroups[i], i); // start saving by root groups
             }
         }
 
         private Folder SaveFolder(Folder rootFolder, int groupId)
         {
             Folder folder = new Folder();
-            string filename = PATH_FOLDERS + "\\save\\" + rootFolder.Name + ".txt";
+            string filename = PATH_FOLDERS + rootFolder.Name + ".txt";
 
-            using (StreamWriter streamWriter = new StreamWriter(PATH_FOLDERS + "\\save\\" + rootFolder.Name + ".txt"))
+            using (StreamWriter streamWriter = new StreamWriter(filename))
             {
                 for (int i = 0; i < rootFolder.SubFolders.Count(); i++)
                 {

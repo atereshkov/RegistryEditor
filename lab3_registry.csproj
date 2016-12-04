@@ -64,6 +64,7 @@
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\FolderUtils.cs" />
     <Compile Include="Utils\Parser.cs" />
+    <Compile Include="Utils\RandomUtils.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

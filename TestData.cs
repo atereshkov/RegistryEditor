@@ -60,7 +60,7 @@ namespace lab3_registry
 
                 Folder subFolder = new Folder()
                 {
-                    Key = 0,
+                    Key = i,
                     Name = splittedFolders[0],
                     SubFolders = new List<Folder>(),
                     Parameters = parameters,
@@ -92,7 +92,8 @@ namespace lab3_registry
 
             string fullPath = FolderUtils.getFullPath(splittedPath[i], splittedPath, i);
 
-            Folder splittedPathI = new Folder() { Key = i,
+            Folder splittedPathI = new Folder() { 
+                Key = i,
                 Name = splittedPath[i], 
                 SubFolders = new List<Folder>(),
                 Parameters = parameters,
@@ -133,6 +134,153 @@ namespace lab3_registry
                 return getFolder(folder.SubFolders.ElementAt(foundId), splittedPath, i, rootGroupName);
             }
         }
+
+        // search folder of subfolder
+
+        public void DeleteFolder(Folder folderToDelete) // delete specific subFolder
+        {
+            Filenames = FileUtils.getFilenamesFromDir(PATH_FOLDERS);
+            List<Folder> folders = new List<Folder>();
+
+            for (int i = 0; i < Filenames.Count(); i++) // get all files from dir "folders"
+            {
+                folders.Add(new Folder()
+                {
+                    Key = i,
+                    Name = Filenames[i],
+                    SubFolders = new List<Folder>(),
+                    Files = new List<File>()
+                });
+            }
+
+            for (int i = 0; i < folders.Count(); i++) // add all root folders
+            {
+                findAndDeleteFolder(folders[i].Name, i, folderToDelete); // start adding subfolders and subfolders of subfolders and so on...
+            }
+        }
+
+        public Folder findAndDeleteFolder(string rootGroupName, int groupId, Folder folderToDelete)
+        {
+            Folder folder = new Folder();
+
+            string[] lines = Reader.ReadAllLines(PATH_FOLDERS + "\\" + rootGroupName + ".txt"); // get all lines from one group (HKEY_LOCAL_MACHINE, for example)
+
+            Char delimiter = '\\';
+            String[] splittedFolders;
+
+            int j = 0;
+            for (int i = 0; i < lines.Count(); i++)
+            {
+                splittedFolders = lines[i].Split(delimiter); // split it with delimiter "\"
+
+                IList<Parameter> parameters = ParameterUtils.getParametersForFolder(splittedFolders[0], rootGroupName);
+
+                Folder subFolder = new Folder()
+                {
+                    Key = i,
+                    Name = splittedFolders[0],
+                    SubFolders = new List<Folder>(),
+                    Parameters = parameters,
+                    FullPath = splittedFolders[0], // can write fullpath as name, because it always second after root group folder
+                    Files = new List<File>()
+                };
+
+                if (splittedFolders.Length > 1)
+                {
+                    int foundId = -1;
+
+                    for (int z = 0; z < RootGroups[groupId].SubFolders.Count(); z++) // find subfolder in exists subfolders
+                    {
+                        if (RootGroups[groupId].SubFolders[z].Name == folderToDelete.Name)
+                        {
+                            foundId = z;
+                            RootGroups[groupId].SubFolders.RemoveAt(foundId);
+                            break;
+                        }
+                    }
+                    if (foundId == -1)
+                    {
+                        return findAndDeleteFolder(RootGroups[groupId].SubFolders[j], splittedFolders, 1, rootGroupName, folderToDelete); // start recursive adding
+                    }
+                    else
+                    {
+                        return folder;
+                    }
+                }
+
+                j++;
+            }
+
+            return folder;
+        }
+
+        private Folder findAndDeleteFolder(Folder folder, string[] splittedPath, int i, string rootGroupName, Folder folderToDelete) // folder = previous path (HC\KOM, HC = folder, KOM = splittedPath[i])
+        {
+            //string fullPath = FolderUtils.getFullPath(splittedPath[i], splittedPath, i);
+
+            Folder splittedPathI = new Folder()
+            {
+                Key = i,
+                Name = splittedPath[i],
+                SubFolders = new List<Folder>(),
+                Files = new List<File>()
+            };
+
+            if (folder.Name == splittedPathI.Name)
+            {
+                return folder;
+            }
+
+            if (i == splittedPath.Length - 1)
+            {
+                Folder folderToFind = new Folder() { Key = i, Name = splittedPath[i - 1], SubFolders = new List<Folder>(), Files = new List<File>() };
+                int foundId = -1;
+
+                for (int j = 0; j < folder.SubFolders.Count(); j++) // find subfolder in exists subfolders
+                {
+                    if (folder.SubFolders[j].Name == folderToDelete.Name)
+                    {
+                        foundId = j;
+                        folder.SubFolders.RemoveAt(foundId);
+                        break;
+                    }
+                }
+                if (foundId == -1)
+                {
+                    return findAndDeleteFolder(folder.SubFolders.ElementAt(foundId + 1), splittedPath, i, rootGroupName, folderToDelete);
+                }
+                else
+                {
+                    return folder;
+                }
+            }
+            else
+            {
+                i++;
+                Folder folderToFind = new Folder() { Key = i, Name = splittedPath[i - 1], SubFolders = new List<Folder>(), Files = new List<File>() };
+                int foundId = -1;
+
+                for (int j = 0; j < folder.SubFolders.Count(); j++) // find subfolder in exists subfolders
+                {
+                    if (folder.SubFolders[j].Name == folderToDelete.Name)
+                    {
+                        foundId = j;
+                        folder.SubFolders.RemoveAt(foundId);
+                        break;
+                    }
+                }
+                if (foundId == -1)
+                {
+                    return findAndDeleteFolder(folder.SubFolders.ElementAt(foundId + 1), splittedPath, i, rootGroupName, folderToDelete);
+                }
+                else
+                {
+                    return folder;
+                }
+            }
+        }
+
+        // Save start:
 
         public void Save()
         {

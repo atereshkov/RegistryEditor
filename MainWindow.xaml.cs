@@ -73,7 +73,5 @@ namespace lab3_registry
         {
             data.Save();
         }
-
-      
     }
 }

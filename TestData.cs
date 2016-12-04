@@ -21,9 +21,17 @@ namespace lab3_registry
             Filenames = FileUtils.getFilenamesFromDir(PATH_FOLDERS);
             List<Folder> folders = new List<Folder>();
 
+            List<Parameter> parameters = new List<Parameter>();
+            parameters.Add(new Parameter(1, "(Default)", "REG_SZ", "(no value)")); // default parameters for root groups
+
             for (int i = 0; i < Filenames.Count(); i++) // get all files from dir "folders"
             {
-                folders.Add(new Folder() { Key = i, Name = Filenames[i], SubFolders = new List<Folder>(), Files = new List<File>() });
+                folders.Add(new Folder() { 
+                    Key = i, 
+                    Name = Filenames[i], 
+                    SubFolders = new List<Folder>(), 
+                    Parameters = parameters,
+                    Files = new List<File>() });
             }
 
             for (int i = 0; i < folders.Count(); i++) // add all root folders
@@ -33,11 +41,11 @@ namespace lab3_registry
             }
         }
 
-        public Folder getFolder(string folderName, int groupId)
+        public Folder getFolder(string rootGroupName, int groupId)
         {
             Folder folder = new Folder();
 
-            string[] lines = Reader.ReadAllLines(PATH_FOLDERS + "\\" + folderName + ".txt"); // get all lines from one group (HKEY_LOCAL_MACHINE, for example)
+            string[] lines = Reader.ReadAllLines(PATH_FOLDERS + "\\" + rootGroupName + ".txt"); // get all lines from one group (HKEY_LOCAL_MACHINE, for example)
 
             Char delimiter = '\\';
             String[] splittedFolders;
@@ -47,13 +55,20 @@ namespace lab3_registry
             {
                 splittedFolders = lines[i].Split(delimiter); // split it with delimiter "\"
 
+                IList<Parameter> parameters = ParameterUtils.getParametersForFolder(splittedFolders[0], rootGroupName);
+
                 Folder subFolder = new Folder()
                 {
                     Key = 0,
                     Name = splittedFolders[0],
                     SubFolders = new List<Folder>(),
+                    Parameters = parameters,
                     Files = new List<File>()
                 };
+
+                Console.WriteLine("GGGGGGGGGGGGGGGGGG: " + splittedFolders[0]);
+
+                // TODO put getParameters here too for subFolder.Name and rootGroupName
 
                 RootGroups[groupId].SubFolders.Add(subFolder); // add first subfolder
 
@@ -63,7 +78,8 @@ namespace lab3_registry
                 }
                 if (splittedFolders.Length > 1)
                 {
-                    getFolder(RootGroups[groupId].SubFolders[j], splittedFolders, 1); // start recursive adding
+                    Console.WriteLine("12312312!!!!: " + RootGroups[groupId].SubFolders[j].Name);
+                    getFolder(RootGroups[groupId].SubFolders[j], splittedFolders, 1, rootGroupName); // start recursive adding
                 }
                 j++;
             }
@@ -71,9 +87,17 @@ namespace lab3_registry
             return folder;
         }
 
-        private Folder getFolder(Folder folder, string[] splittedPath, int i)
+        private Folder getFolder(Folder folder, string[] splittedPath, int i, string rootGroupName) // folder = previous path (HC\KOM, HC = folder, KOM = splittedPath[i])
         {
-            Folder splittedPathI = new Folder() { Key = i, Name = splittedPath[i], SubFolders = new List<Folder>(), Files = new List<File>() };
+            Console.WriteLine("!!!Current: " + splittedPath[i] + " folder (previous): " + folder.Name);
+            IList<Parameter> parameters = ParameterUtils.getParametersForFolder(splittedPath[i], rootGroupName); // getParameters for this folderName
+
+            Folder splittedPathI = new Folder() { Key = i,
+                Name = splittedPath[i], 
+                SubFolders = new List<Folder>(),
+                Parameters = parameters,
+                Files = new List<File>() };
+
             if (!folder.SubFolders.Contains(splittedPathI))
             {
                 folder.SubFolders.Add(splittedPathI);
@@ -103,7 +127,7 @@ namespace lab3_registry
                     }
                 }
 
-                return getFolder(folder.SubFolders.ElementAt(foundId), splittedPath, i);
+                return getFolder(folder.SubFolders.ElementAt(foundId), splittedPath, i, rootGroupName);
             }
         }
 

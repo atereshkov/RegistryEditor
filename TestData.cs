@@ -15,6 +15,7 @@ namespace lab3_registry
         public IList<string> Filenames = new List<string>();
 
         public const string PATH_FOLDERS = @"E:\Универ\5SEMESTR\ОС\lab3\lab3_registry\bin\Debug\folders";
+        public const string PATH_PARAMETERS = @"E:\Универ\5SEMESTR\ОС\lab3\lab3_registry\bin\Debug\parameters";
 
         public void Load()
         {
@@ -63,12 +64,9 @@ namespace lab3_registry
                     Name = splittedFolders[0],
                     SubFolders = new List<Folder>(),
                     Parameters = parameters,
+                    FullPath = splittedFolders[0], // can write fullpath as name, because it always second after root group folder
                     Files = new List<File>()
                 };
-
-                Console.WriteLine("GGGGGGGGGGGGGGGGGG: " + splittedFolders[0]);
-
-                // TODO put getParameters here too for subFolder.Name and rootGroupName
 
                 RootGroups[groupId].SubFolders.Add(subFolder); // add first subfolder
 
@@ -92,11 +90,16 @@ namespace lab3_registry
             Console.WriteLine("!!!Current: " + splittedPath[i] + " folder (previous): " + folder.Name);
             IList<Parameter> parameters = ParameterUtils.getParametersForFolder(splittedPath[i], rootGroupName); // getParameters for this folderName
 
+            string fullPath = FolderUtils.getFullPath(splittedPath[i], splittedPath, i);
+
             Folder splittedPathI = new Folder() { Key = i,
                 Name = splittedPath[i], 
                 SubFolders = new List<Folder>(),
                 Parameters = parameters,
+                FullPath = fullPath,
                 Files = new List<File>() };
+
+            //Console.WriteLine("FULLPATH FOR " + splittedPath[i] + " : " + fullPath);
 
             if (!folder.SubFolders.Contains(splittedPathI))
             {
@@ -145,14 +148,19 @@ namespace lab3_registry
         {
             Folder folder = new Folder();
             string filename = PATH_FOLDERS + "\\" + rootFolder.Name + ".txt";
+            string paramsFilename = PATH_PARAMETERS + "\\" + rootFolder.Name + ".txt";
+
+            List<string> existParameters = new List<string>();
 
             using (StreamWriter streamWriter = new StreamWriter(filename))
+            using (StreamWriter paramsWriter = new StreamWriter(paramsFilename))
             {
                 for (int i = 0; i < rootFolder.SubFolders.Count(); i++)
                 {
                     Console.WriteLine(rootFolder.SubFolders[i].Name);
-                    SaveFolder(streamWriter, rootFolder.SubFolders);
+                    SaveFolder(streamWriter, paramsWriter, rootFolder.SubFolders, existParameters);
                 }
+                existParameters.Clear();
                 streamWriter.Close();
             }
 
@@ -163,9 +171,10 @@ namespace lab3_registry
             return folder;
         }
 
-        public void SaveFolder(StreamWriter writer, IList<Folder> subFolders)
+        public void SaveFolder(StreamWriter writer, StreamWriter paramsWriter, IList<Folder> subFolders, List<string> existParameters)
         {
             List<String> subs = new List<String>();
+
             foreach (Folder subFolder in subFolders)
             {
                 if (subFolders.Count() > 0)
@@ -175,12 +184,29 @@ namespace lab3_registry
                 }
                 else
                 {
-                    Console.WriteLine("Else: " + subFolder.Name);
+                    //Console.WriteLine("Else: " + subFolder.Name);
                 }
                 writer.Write(FileUtils.getFullPath(subs));
-                Console.WriteLine("sub = " + FileUtils.getFullPath(subs));
+                //Console.WriteLine("sub = " + FileUtils.getFullPath(subs));
+                //Console.WriteLine("FullPath!: " + subFolder.FullPath);
+
+                // write parameters for each folder:
+
+                if (subFolder.Parameters.Count() > 0 && !existParameters.Contains(subFolder.FullPath))
+                {
+                    paramsWriter.WriteLine(subFolder.FullPath);
+
+                    foreach (Parameter param in subFolder.Parameters)
+                    {
+                        paramsWriter.WriteLine(ParameterUtils.getStringParameter(param));
+                    }
+
+                    paramsWriter.WriteLine("---");
+                    existParameters.Add(subFolder.FullPath);
+                }
+                
                 subs.Clear();
-                SaveFolder(writer, subFolder.SubFolders);
+                SaveFolder(writer, paramsWriter, subFolder.SubFolders, existParameters);
             }
             writer.WriteLine();
         }

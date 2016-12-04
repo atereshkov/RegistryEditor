@@ -31,8 +31,8 @@ namespace lab3_registry
 
             List<Parameter> result = new List<Parameter>();
             result.Add(new Parameter(1, "(По умолчанию)", "REG_SZ", "(значение не присвоено)"));
-            result.Add(new Parameter(2, "gta.exe", "REG_SZ", "D:/GTA San Andreas/gta_sa.exe"));
-            result.Add(new Parameter(3, "Player Name", "REG_SZ", "Andrew Kramer"));
+            //result.Add(new Parameter(2, "gta.exe", "REG_SZ", "D:/GTA San Andreas/gta_sa.exe"));
+            //result.Add(new Parameter(3, "Player Name", "REG_SZ", "Andrew Kramer"));
 
             dataGrid.ItemsSource = result;
         }
